@@ -16,7 +16,7 @@ def get_average_gates(file_name):
 
 
 
-path = "../output"
+path = "output"
 
 data = []
 data.append(["qubit_len", "dense", "one_hot"])
