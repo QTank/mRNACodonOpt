@@ -72,13 +72,13 @@ if __name__ == '__main__':
         sequence_list = spilt_sequence(protein_sequence, split_len)
         output_data = count_gates(sequence_list)
         name = time.strftime("%m-%d_%H-%M-%S")
-        write_data(f"output/{split_len}/Gate/dense_P0DTC2_{name}_Gate.csv", output_data)
+        write_data(f"../output/{split_len}/Gate/dense_P0DTC2_{name}_Gate.csv", output_data)
 
     for i in range(3, 9):
         split_len = i
         sequence_list = spilt_sequence(protein_sequence, split_len)
         output_data = optimization(sequence_list)
-        write_data(f"output/{split_len}/P0DTC2_{name}.csv", output_data)
+        write_data(f"../output/{split_len}/P0DTC2_{name}.csv", output_data)
 
 # sequence = "HAIHVSGT"
 # parameters = TunableParameters(0.3, 0.15 * 6, 1, 13000)
