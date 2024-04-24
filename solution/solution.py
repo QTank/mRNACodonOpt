@@ -6,6 +6,7 @@ import util, csv, time
 import numpy as np
 from one_hot_codon_optimization import CodonOptimizationOneHot
 
+
 def write_data(name, data):
     with open(name, 'w') as file:
         writer = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -67,55 +68,64 @@ def spilt_sequence(protein_sequence, split_len):
     return sequence_list
 
 
-if __name__ == '__main__':
-    protein_sequence = "FVFLVLLPLVSSQCVNLTTRTQLPPAYTNSFTRGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFHAIHVSGTNGTKRFDNPVLPFNDGVYFASTEKSNIIRGWIFGTTLDSKTQSLLIVNNATNVVIKVCEFQFCNDPFLGVYYHKNNKSWMESEFRVYSSANNCTFEYVSQPFLMDLEGKQGNFKNLREFVFKNIDGYFKIYSKHTPINLVRDLPQGFSALEPLVDLPIGINITRFQTLLALHRSYLTPGDSSSGWTAGAAAYYVGYLQPRTFLLKYNENGTITDAVDCALDPLSETKCTLKSFTVEKGIYQTSNFRVQPTESIVRFPNITNLCPFGEVFNATRFASVYAWNRKRISNCVADYSVLYNSASFSTFKCYGVSPTKLNDLCFTNVYADSFVIRGDEVRQIAPGQTGKIADYNYKLPDDFTGCVIAWNSNNLDSKVGGNYNYLYRLFRKSNLKPFERDISTEIYQAGSTPCNGVEGFNCYFPLQSYGFQPTNGVGYQPYRVVVLSFELLHAPATVCGPKKSTNLVKNKCVNFNFNGLTGTGVLTESNKKFLPFQQFGRDIADTTDAVRDPQTLEILDITPCSFGGVSVITPGTNTSNQVAVLYQDVNCTEVPVAIHADQLTPTWRVYSTGSNVFQTRAGCLIGAEHVNNSYECDIPIGAGICASYQTQTNSPRRARSVASQSIIAYTMSLGAENSVAYSNNSIAIPTNFTISVTTEILPVSMTKTSVDCTMYICGDSTECSNLLLQYGSFCTQLNRALTGIAVEQDKNTQEVFAQVKQIYKTPPIKDFGGFNFSQILPDPSKPSKRSFIEDLLFNKVTLADAGFIKQYGDCLGDIAARDLICAQKFNGLTVLPPLLTDEMIAQYTSALLAGTITSGWTFGAGAALQIPFAMQMAYRFNGIGVTQNVLYENQKLIANQFNSAIGKIQDSLSSTASALGKLQDVVNQNAQALNTLVKQLSSNFGAISSVLNDILSRLDKVEAEVQIDRLITGRLQSLQTYVTQQLIRAAEIRASANLAATKMSECVLGQSKRVDFCGKGYHLMSFPQSAPHGVVFLHVTYVPAQEKNFTTAPAICHDGKAHFPREGVFVSNGTHWFVTQRNFYEPQIITTDNTFVSGNCDVVIGIVNNTVYDPLQPELDSFKEELDKYFKNHTSPDVDLGDISGINASVVNIQKEIDRLNEVAKNLNESLIDLQELGKYEQYIKWPWYIWLGFIAGLIAIVMVTIMLCCMTSCCSCLKGCCSCGSCCKFDEDDSEPVLKGVKLHYT"
+def statistic_gates(protein_sequence, split_range):
     # statistic the number of gates with dense encoding for fragments with a length from 3 to 19
-    # for i in range(3, 20):
-    #     split_len = i
-    #     sequence_list = spilt_sequence(protein_sequence, split_len)
-    #     output_data = count_gates(sequence_list)
-    #     name = time.strftime("%m-%d_%H-%M-%S")
-    #     path = f"../output/{split_len}/Gate"
-    #     if not os.path.exists(path):
-    #         os.makedirs(path)
-    #     write_data(f"{path}/dense_P0DTC2_{name}_Gate.csv", output_data)
+    for split_len in split_range:
+        sequence_list = spilt_sequence(protein_sequence, split_len)
+        output_data = count_gates(sequence_list)
+        name = time.strftime("%m-%d_%H-%M-%S")
+        path = f"../output/{split_len}/Gate"
+        if not os.path.exists(path):
+            os.makedirs(path)
+        write_data(f"{path}/dense_P0DTC2_{name}_Gate.csv", output_data)
 
+
+def execute_optimization(protein_sequence, split_range):
     # execute the quantum method for mRNA codon optimization for fragments with a length from 3 to 8.
     # It takes more time when the length of fragments is larger than 8
-    # for i in range(3, 9):
-    #     split_len = i
-    #     sequence_list = spilt_sequence(protein_sequence, split_len)
-    #     output_data = optimization(sequence_list)
-    #     name = time.strftime("%m-%d_%H-%M-%S")
-    #     path = f"../output/{split_len}/dense"
-    #     if not os.path.exists(path):
-    #         os.makedirs(path)
-    #     write_data(f"/P0DTC2_{name}.csv", output_data)
+    for split_len in split_range:
+        sequence_list = spilt_sequence(protein_sequence, split_len)
+        output_data = optimization(sequence_list)
+        name = time.strftime("%m-%d_%H-%M-%S")
+        path = f"../output/{split_len}/dense"
+        if not os.path.exists(path):
+            os.makedirs(path)
+        write_data(f"/P0DTC2_{name}.csv", output_data)
 
-    # statistic the required number of qubits for each fragment with lengths from 6 to 19,
-    # the maximum of each fragment as result
 
-    statstic_qubits = []
-    statstic_qubits.append(["fragment_len", "dense", "one_hot"])
-    mean_qubits = []
-    mean_qubits.append(["fragment_len", "dense", "one_hot"])
-    start_len = 6
-    end_len = 20
-    for split_len in range(start_len, end_len):
+def statistic_qubits(protein_sequence, split_range):
+    # statistic the required number of qubits for each fragment,
+    # the maximum qubits of each fragment as result,
+    # the mean qubits of each fragment as result,
+    max_qubits = [["fragment_len", "dense", "one_hot"]]
+    mean_qubits = [["fragment_len", "dense", "one_hot"]]
+    for split_len in split_range:
         sequence_list = spilt_sequence(protein_sequence, split_len)
         qubits_dense_list = util.count_qubits(sequence_list, "dense")
         qubits_one_hot_list = util.count_qubits(sequence_list, "one_hot")
-        statstic_qubits.append([split_len, max(qubits_dense_list), max(qubits_one_hot_list)])
+        max_qubits.append([split_len, max(qubits_dense_list), max(qubits_one_hot_list)])
         mean_qubits.append([split_len, round(np.mean(qubits_dense_list)), round(np.mean(qubits_one_hot_list))])
-    # util.write_data(f"../output/statistic_qubits.csv", statstic_qubits)
+    util.write_data(f"../output/statistic_qubits.csv", max_qubits)
     util.write_data(f"../output/statistic_mean_qubits.csv", mean_qubits)
 
+
+def solution(sequence):
     # test whether the quantum method can work for the protein sequence "HAIHVSGT"
-    # sequence = "HAIHVSGT"
-    # parameters = TunableParameters(0.3, 0.15 * 6, 1, 13000)
-    # codonOpt = CodonOptimization(sequence, parameters)
-    # qubit_op = codonOpt.create_qubit_op()
-    # bitstring, value = VQE.get_min(qubit_op)
-    # mRNA_sequence = util.decode_bitstring(sequence, bitstring)
-    # print(bitstring, value)
-    # print(mRNA_sequence)
+    parameters = TunableParameters(0.3, 0.15 * 6, 1, 13000)
+    codonOpt = CodonOptimization(sequence, parameters)
+    qubit_op = codonOpt.create_qubit_op()
+    bitstring, value = VQE.get_min(qubit_op)
+    mRNA_sequence = util.decode_bitstring(sequence, bitstring)
+    print(bitstring, value)
+    print(mRNA_sequence)
+
+
+if __name__ == '__main__':
+    protein_sequence = "FVFLVLLPLVSSQCVNLTTRTQLPPAYTNSFTRGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFHAIHVSGTNGTKRFDNPVLPFNDGVYFASTEKSNIIRGWIFGTTLDSKTQSLLIVNNATNVVIKVCEFQFCNDPFLGVYYHKNNKSWMESEFRVYSSANNCTFEYVSQPFLMDLEGKQGNFKNLREFVFKNIDGYFKIYSKHTPINLVRDLPQGFSALEPLVDLPIGINITRFQTLLALHRSYLTPGDSSSGWTAGAAAYYVGYLQPRTFLLKYNENGTITDAVDCALDPLSETKCTLKSFTVEKGIYQTSNFRVQPTESIVRFPNITNLCPFGEVFNATRFASVYAWNRKRISNCVADYSVLYNSASFSTFKCYGVSPTKLNDLCFTNVYADSFVIRGDEVRQIAPGQTGKIADYNYKLPDDFTGCVIAWNSNNLDSKVGGNYNYLYRLFRKSNLKPFERDISTEIYQAGSTPCNGVEGFNCYFPLQSYGFQPTNGVGYQPYRVVVLSFELLHAPATVCGPKKSTNLVKNKCVNFNFNGLTGTGVLTESNKKFLPFQQFGRDIADTTDAVRDPQTLEILDITPCSFGGVSVITPGTNTSNQVAVLYQDVNCTEVPVAIHADQLTPTWRVYSTGSNVFQTRAGCLIGAEHVNNSYECDIPIGAGICASYQTQTNSPRRARSVASQSIIAYTMSLGAENSVAYSNNSIAIPTNFTISVTTEILPVSMTKTSVDCTMYICGDSTECSNLLLQYGSFCTQLNRALTGIAVEQDKNTQEVFAQVKQIYKTPPIKDFGGFNFSQILPDPSKPSKRSFIEDLLFNKVTLADAGFIKQYGDCLGDIAARDLICAQKFNGLTVLPPLLTDEMIAQYTSALLAGTITSGWTFGAGAALQIPFAMQMAYRFNGIGVTQNVLYENQKLIANQFNSAIGKIQDSLSSTASALGKLQDVVNQNAQALNTLVKQLSSNFGAISSVLNDILSRLDKVEAEVQIDRLITGRLQSLQTYVTQQLIRAAEIRASANLAATKMSECVLGQSKRVDFCGKGYHLMSFPQSAPHGVVFLHVTYVPAQEKNFTTAPAICHDGKAHFPREGVFVSNGTHWFVTQRNFYEPQIITTDNTFVSGNCDVVIGIVNNTVYDPLQPELDSFKEELDKYFKNHTSPDVDLGDISGINASVVNIQKEIDRLNEVAKNLNESLIDLQELGKYEQYIKWPWYIWLGFIAGLIAIVMVTIMLCCMTSCCSCLKGCCSCGSCCKFDEDDSEPVLKGVKLHYT"
+    split_range = range(6, 20)
+    # statistic_gates(protein_sequence, split_range)
+    # statistic_qubits(protein_sequence, split_range)
+    # execute_optimization(protein_sequence, range(3, 9))
+    sequence = "HAIHVSGT"
+    solution(sequence)
+
