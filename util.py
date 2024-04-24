@@ -184,3 +184,34 @@ def count_pauli_z(operator):
                 count += 1
 
     return count
+
+
+def count_qubits(protein_sequence, encoding_type):
+    results = []
+    index = 1
+    count = len(protein_sequence)
+    for sequence in protein_sequence:
+        qubit_len = calculate_qubit_len(sequence, encoding_type)
+        print(f"{index}/{count} Start to execute VQE on {sequence} with dense encoding ... , requiring {qubit_len} qubits")
+        index += 1
+        results.append(qubit_len)
+    print(f"The maximum required number of qubits: {max(results)}")
+
+    return results
+
+
+def calculate_qubit_len(sequence, encoding_type, table_name='e_coli_316407'):
+    codon_table = pct.get_codons_table(table_name)
+    count = 0
+    for amino in sequence:
+        if encoding_type == "one_hot":
+            count += len(codon_table[amino])
+        else:
+            # count += np.ceil(np.log2(len(codon_table[amino])))
+            count += round(np.log2(len(codon_table[amino])))
+
+            if round(np.log2(len(codon_table[amino]))) != np.ceil(np.log2(len(codon_table[amino]))):
+
+                print(sequence)
+
+    return count

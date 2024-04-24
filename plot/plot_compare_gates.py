@@ -7,8 +7,8 @@ def plot_gates(dense_gates, one_hot_gates, output_file):
     plt.plot(x, one_hot_gates[3:], marker='o', label='one-hot')
     plt.plot(x, dense_gates[3:], marker='*', label='dense')
     plt.xlabel("the length of each fragment of protein")
-    plt.ylabel("the required number of gates")
-    plt.title("the number required of gates with one-hot and dense encoding")
+    plt.ylabel("the number of gates")
+    plt.title("the required number of gates with one-hot and dense encoding")
     plt.legend()
     plt.savefig(output_file)
 

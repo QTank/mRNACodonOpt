@@ -1,7 +1,5 @@
 import python_codon_tables as pct
-from tunable_parameters import TunableParameters
 import numpy as np
-
 import util
 from codon_optimization import CodonOptimization
 

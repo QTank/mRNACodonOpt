@@ -1,18 +1,19 @@
+import os.path
 import VQE
 from codon_optimization import CodonOptimization
 from tunable_parameters import TunableParameters
-import util
-import csv
+import util, csv, time
 import numpy as np
-import time
-
+from one_hot_codon_optimization import CodonOptimizationOneHot
 
 def write_data(name, data):
     with open(name, 'w') as file:
         writer = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(["amino_sequence", "dense_encoding", "qubit_len", "mRNA_sequence", "value", "time", "Gate_counts"])
+        writer.writerow(
+            ["amino_sequence", "dense_encoding", "qubit_len", "mRNA_sequence", "value", "time", "Gate_counts"])
 
         writer.writerows(data)
+
 
 def optimization(protein_sequence):
     results = []
@@ -27,25 +28,25 @@ def optimization(protein_sequence):
         qubit_op = codonOpt.create_qubit_op()
         count_pauli_z = util.count_pauli_z(qubit_op)
         bitstring, value = VQE.get_min(qubit_op)
-        # bitstring, value = VQE.test(qubit_op)
         mRNA_sequence = util.decode_bitstring(sequence, bitstring)
 
         executing_time = round(time.time() - start_time, 2)
         print(f"The bit string is {bitstring}, value is {value.real}")
         print(f"The execute time on {sequence} is {executing_time} s")
         index += 1
-        results.append([sequence, bitstring, len(bitstring), mRNA_sequence, round(value.real, 3), executing_time, count_pauli_z])
+        results.append(
+            [sequence, bitstring, len(bitstring), mRNA_sequence, round(value.real, 3), executing_time, count_pauli_z])
 
     return results
 
-def count_gates(protein_sequence):
+
+def count_gates(protein_sequence_list):
     results = []
     index = 1
-    count = len(protein_sequence)
+    count = len(protein_sequence_list)
     results.append(["amino_sequence", "qubit_len", "Gate_counts"])
-    for sequence in protein_sequence:
+    for sequence in protein_sequence_list:
         tune_parameters = TunableParameters(0.3, 0.15 * 6, 1, 130000)
-
         codonOpt = CodonOptimization(sequence, tune_parameters)
         print(f"{index}/{count} Start to execute VQE on {sequence} ... , requiring {codonOpt.qubit_len} qubits")
         qubit_op = codonOpt.create_qubit_op()
@@ -54,37 +55,67 @@ def count_gates(protein_sequence):
         results.append([sequence, codonOpt.qubit_len, count_pauli_z])
     return results
 
+
 def spilt_sequence(protein_sequence, split_len):
     sequence_list = []
 
     index = 0
     while index < len(protein_sequence):
-        sequence_list.append(protein_sequence[index:index+split_len])
+        sequence_list.append(protein_sequence[index:index + split_len])
         index += split_len
 
     return sequence_list
 
+
 if __name__ == '__main__':
-
     protein_sequence = "FVFLVLLPLVSSQCVNLTTRTQLPPAYTNSFTRGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFHAIHVSGTNGTKRFDNPVLPFNDGVYFASTEKSNIIRGWIFGTTLDSKTQSLLIVNNATNVVIKVCEFQFCNDPFLGVYYHKNNKSWMESEFRVYSSANNCTFEYVSQPFLMDLEGKQGNFKNLREFVFKNIDGYFKIYSKHTPINLVRDLPQGFSALEPLVDLPIGINITRFQTLLALHRSYLTPGDSSSGWTAGAAAYYVGYLQPRTFLLKYNENGTITDAVDCALDPLSETKCTLKSFTVEKGIYQTSNFRVQPTESIVRFPNITNLCPFGEVFNATRFASVYAWNRKRISNCVADYSVLYNSASFSTFKCYGVSPTKLNDLCFTNVYADSFVIRGDEVRQIAPGQTGKIADYNYKLPDDFTGCVIAWNSNNLDSKVGGNYNYLYRLFRKSNLKPFERDISTEIYQAGSTPCNGVEGFNCYFPLQSYGFQPTNGVGYQPYRVVVLSFELLHAPATVCGPKKSTNLVKNKCVNFNFNGLTGTGVLTESNKKFLPFQQFGRDIADTTDAVRDPQTLEILDITPCSFGGVSVITPGTNTSNQVAVLYQDVNCTEVPVAIHADQLTPTWRVYSTGSNVFQTRAGCLIGAEHVNNSYECDIPIGAGICASYQTQTNSPRRARSVASQSIIAYTMSLGAENSVAYSNNSIAIPTNFTISVTTEILPVSMTKTSVDCTMYICGDSTECSNLLLQYGSFCTQLNRALTGIAVEQDKNTQEVFAQVKQIYKTPPIKDFGGFNFSQILPDPSKPSKRSFIEDLLFNKVTLADAGFIKQYGDCLGDIAARDLICAQKFNGLTVLPPLLTDEMIAQYTSALLAGTITSGWTFGAGAALQIPFAMQMAYRFNGIGVTQNVLYENQKLIANQFNSAIGKIQDSLSSTASALGKLQDVVNQNAQALNTLVKQLSSNFGAISSVLNDILSRLDKVEAEVQIDRLITGRLQSLQTYVTQQLIRAAEIRASANLAATKMSECVLGQSKRVDFCGKGYHLMSFPQSAPHGVVFLHVTYVPAQEKNFTTAPAICHDGKAHFPREGVFVSNGTHWFVTQRNFYEPQIITTDNTFVSGNCDVVIGIVNNTVYDPLQPELDSFKEELDKYFKNHTSPDVDLGDISGINASVVNIQKEIDRLNEVAKNLNESLIDLQELGKYEQYIKWPWYIWLGFIAGLIAIVMVTIMLCCMTSCCSCLKGCCSCGSCCKFDEDDSEPVLKGVKLHYT"
-    for i in range(3, 20):
-        split_len = i
-        sequence_list = spilt_sequence(protein_sequence, split_len)
-        output_data = count_gates(sequence_list)
-        name = time.strftime("%m-%d_%H-%M-%S")
-        write_data(f"../output/{split_len}/Gate/dense_P0DTC2_{name}_Gate.csv", output_data)
+    # statistic the number of gates with dense encoding for fragments with a length from 3 to 19
+    # for i in range(3, 20):
+    #     split_len = i
+    #     sequence_list = spilt_sequence(protein_sequence, split_len)
+    #     output_data = count_gates(sequence_list)
+    #     name = time.strftime("%m-%d_%H-%M-%S")
+    #     path = f"../output/{split_len}/Gate"
+    #     if not os.path.exists(path):
+    #         os.makedirs(path)
+    #     write_data(f"{path}/dense_P0DTC2_{name}_Gate.csv", output_data)
 
-    for i in range(3, 9):
-        split_len = i
-        sequence_list = spilt_sequence(protein_sequence, split_len)
-        output_data = optimization(sequence_list)
-        write_data(f"../output/{split_len}/P0DTC2_{name}.csv", output_data)
+    # execute the quantum method for mRNA codon optimization for fragments with a length from 3 to 8.
+    # It takes more time when the length of fragments is larger than 8
+    # for i in range(3, 9):
+    #     split_len = i
+    #     sequence_list = spilt_sequence(protein_sequence, split_len)
+    #     output_data = optimization(sequence_list)
+    #     name = time.strftime("%m-%d_%H-%M-%S")
+    #     path = f"../output/{split_len}/dense"
+    #     if not os.path.exists(path):
+    #         os.makedirs(path)
+    #     write_data(f"/P0DTC2_{name}.csv", output_data)
 
-# sequence = "HAIHVSGT"
-# parameters = TunableParameters(0.3, 0.15 * 6, 1, 13000)
-# codonOpt = CodonOptimization(sequence, parameters)
-# qubit_op = codonOpt.create_qubit_op()
-# bitstring, value = VQE.get_min(qubit_op)
-# mRNA_sequence = util.decode_bitstring(sequence, bitstring)
-# print(bitstring, value)
-# print(mRNA_sequence)
+    # statistic the required number of qubits for each fragment with lengths from 6 to 19,
+    # the maximum of each fragment as result
+
+    statstic_qubits = []
+    statstic_qubits.append(["fragment_len", "dense", "one_hot"])
+    mean_qubits = []
+    mean_qubits.append(["fragment_len", "dense", "one_hot"])
+    start_len = 6
+    end_len = 20
+    for split_len in range(start_len, end_len):
+        sequence_list = spilt_sequence(protein_sequence, split_len)
+        qubits_dense_list = util.count_qubits(sequence_list, "dense")
+        qubits_one_hot_list = util.count_qubits(sequence_list, "one_hot")
+        statstic_qubits.append([split_len, max(qubits_dense_list), max(qubits_one_hot_list)])
+        mean_qubits.append([split_len, round(np.mean(qubits_dense_list)), round(np.mean(qubits_one_hot_list))])
+    # util.write_data(f"../output/statistic_qubits.csv", statstic_qubits)
+    util.write_data(f"../output/statistic_mean_qubits.csv", mean_qubits)
+
+    # test whether the quantum method can work for the protein sequence "HAIHVSGT"
+    # sequence = "HAIHVSGT"
+    # parameters = TunableParameters(0.3, 0.15 * 6, 1, 13000)
+    # codonOpt = CodonOptimization(sequence, parameters)
+    # qubit_op = codonOpt.create_qubit_op()
+    # bitstring, value = VQE.get_min(qubit_op)
+    # mRNA_sequence = util.decode_bitstring(sequence, bitstring)
+    # print(bitstring, value)
+    # print(mRNA_sequence)

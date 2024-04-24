@@ -4,6 +4,7 @@ from one_hot_codon import CodonOneHot
 from tunable_parameters import TunableParameters
 import util
 
+
 class CodonOptimizationOneHot:
 
     def __init__(self, protein_sequence: str, parameters: TunableParameters, table_name="e_coli_316407"):
@@ -81,6 +82,5 @@ class CodonOptimizationOneHot:
     def create_qubit_op(self):
         h = self.create_usage() + self.create_target_gc() + self.create_repeated_nucleotides() + self.create_redundant_encoding()
 
-        # h = self.create_redundant_encoding()
         return h.reduce()
 
