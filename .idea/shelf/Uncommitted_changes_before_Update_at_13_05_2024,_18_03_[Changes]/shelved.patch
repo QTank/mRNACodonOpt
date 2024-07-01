@@ -1,0 +1,135 @@
+Index: .idea/mRNACodonOpt.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/mRNACodonOpt.iml b/.idea/mRNACodonOpt.iml
+new file mode 100644
+--- /dev/null	(date 1713094677446)
++++ b/.idea/mRNACodonOpt.iml	(date 1713094677446)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="PYTHON_MODULE" version="4">
++  <component name="NewModuleRootManager">
++    <content url="file://$MODULE_DIR$" />
++    <orderEntry type="inheritedJdk" />
++    <orderEntry type="sourceFolder" forTests="false" />
++  </component>
++</module>
+\ No newline at end of file
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+new file mode 100644
+--- /dev/null	(date 1713094677454)
++++ b/.idea/modules.xml	(date 1713094677454)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectModuleManager">
++    <modules>
++      <module fileurl="file://$PROJECT_DIR$/.idea/mRNACodonOpt.iml" filepath="$PROJECT_DIR$/.idea/mRNACodonOpt.iml" />
++    </modules>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+--- /dev/null	(date 1713094678288)
++++ b/.idea/.gitignore	(date 1713094678288)
+@@ -0,0 +1,3 @@
++# Default ignored files
++/shelf/
++/workspace.xml
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1713874535510)
++++ b/.idea/vcs.xml	(date 1713874535510)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: Test/Test_VQE.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Test/Test_VQE.py b/Test/Test_VQE.py
+new file mode 100644
+--- /dev/null	(date 1713887733759)
++++ b/Test/Test_VQE.py	(date 1713887733759)
+@@ -0,0 +1,25 @@
++import VQE
++from codon_optimization import CodonOptimization
++from tunable_parameters import TunableParameters
++import util
++import csv
++import numpy as np
++import time
++
++from qiskit.opflow import PauliOp, I, Z
++# from qiskit.primitives import Sampler
++
++qubit_op = I^I^I
++qubit_op += Z^I^Z * 0.1
++qubit_op += Z ^ I ^ I
++
++
++# print(VQE.test(qubit_op))
++
++#from qiskit_ibm_runtime import QiskitRuntimeService
++
++# service = QiskitRuntimeService()
++# backend = service.least_busy(operational=True, simulator=False, min_num_qubits=127)
++# from qiskit_ibm_runtime import SamplerV2 as Sampler
++#
++# sampler = Sampler(backend=backend)
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+new file mode 100644
+--- /dev/null	(date 1713094677473)
++++ b/.idea/misc.xml	(date 1713094677473)
+@@ -0,0 +1,4 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10 (mRNACodonOpt)" project-jdk-type="Python SDK" />
++</project>
+\ No newline at end of file
+Index: .idea/inspectionProfiles/profiles_settings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/inspectionProfiles/profiles_settings.xml b/.idea/inspectionProfiles/profiles_settings.xml
+new file mode 100644
+--- /dev/null	(date 1713094677512)
++++ b/.idea/inspectionProfiles/profiles_settings.xml	(date 1713094677512)
+@@ -0,0 +1,6 @@
++<component name="InspectionProjectProfileManager">
++  <settings>
++    <option name="USE_PROJECT_PROFILE" value="false" />
++    <version value="1.0" />
++  </settings>
++</component>
+\ No newline at end of file

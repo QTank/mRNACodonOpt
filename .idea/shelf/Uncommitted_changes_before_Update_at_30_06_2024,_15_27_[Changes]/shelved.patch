@@ -1,0 +1,42 @@
+Index: statistic.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/statistic.py b/statistic.py
+new file mode 100644
+--- /dev/null	(date 1717739611070)
++++ b/statistic.py	(date 1717739611070)
+@@ -0,0 +1,31 @@
++import numpy as np
++from typing import List, Callable
++from scipy.optimize import minimize
++from scipy.optimize._optimize import OptimizeResult
++import matplotlib.pyplot as plt
++
++from qiskit import QuantumCircuit
++from qiskit.quantum_info import Statevector, Operator, SparsePauliOp
++from qiskit.circuit.library import TwoLocal
++from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
++from qiskit.visualization import plot_histogram
++# from qiskit_ibm_runtime.fake_provider import FakeSherbrooke
++# from qiskit_ibm_runtime import Session, EstimatorV2 as Estimator
++# from qiskit_aer import AerSimulator
++# from qiskit_ibm_runtime.fake_provider import FakeTorino, FakeOsaka
++from qiskit.quantum_info import Pauli
++from tunable_parameters import TunableParameters
++
++from codon_optimization import CodonOptimization
++
++sequence = "QCVNLT"
++parameters = TunableParameters(0.3, 0.9, 1, 13000)
++codonOpt = CodonOptimization(sequence, parameters)
++qubit_op = codonOpt.create_qubit_op()
++print(qubit_op)
++
++# print(Pauli("I"))
++
++# I = Pauli("I")
++# Z = Pauli("Z")
++# print(I ^ Z)
+\ No newline at end of file
