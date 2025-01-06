@@ -19,8 +19,8 @@ def plot(opt_data_name, exact_data_name, one_hot_data_name, n, output_file):
 	max_value = max(one_hot)
 	max_value = round(max_value)
 	plt.plot(range(max_value), range(max_value), color='r', label="exact value")
-	plt.xlabel("Exact hamiltonian value")
-	plt.ylabel("Optimal hamiltonian value")
+	plt.xlabel("Exact minimal value")
+	plt.ylabel("Optimal minimal value")
 	plt.title("Fragment with length of %i" % n)
 	plt.legend()
 	#plt.show()
@@ -41,11 +41,11 @@ def plot_dense(opt_data_name, exact_data_name, n, output_file):
 	max_value = max(x)
 	max_value = round(max_value)
 	plt.plot(range(max_value), range(max_value), color='r', label="exact value")
-	plt.xlabel("Exact hamiltonian value")
-	plt.ylabel("Optimal hamiltonian value")
-	plt.title("Fragment with length of %i" % n)
+	plt.xlabel("Exact minimal value")
+	plt.ylabel("Optimal minimal value")
+	plt.title("Each amino acid sequence with length of %i" % n)
 	plt.legend()
-	#plt.show()
+	# plt.show()
 	plt.savefig(output_file)
 
 
@@ -56,7 +56,7 @@ exact = "exact"
 one_hot = "one_hot"
 time_stamp = time.strftime("%m-%d_%H-%M-%S")
 
-output_file_name = f"{path}/P0DTC2_{time_stamp}"
+output_file_name = f"{path}/P0DTC2_{time_stamp}_presentation"
 # opt_file_name = f"{path}/P0DTC2_04-19_12-04-21.csv"
 dense_file_name = f"{path}/{dense}/P0DTC2_04-16_18-12-59.csv"
 # exact_file_name = f"{path}/{exact}/P0DTC2_04-19_13-13-13.csv"

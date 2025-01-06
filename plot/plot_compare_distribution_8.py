@@ -24,9 +24,9 @@ def plot_qubits(dense_dict, one_hot_dict, output_file):
 
     plt.bar(x, one_hot_sequence, label='one-hot')
     plt.bar(x, dense_sequence, bottom=one_hot_sequence, label='dense')
-    plt.xlabel("the number of qubits")
-    plt.ylabel("the number of sequences")
-    plt.title("number of sequences for each fragment length of 8")
+    plt.xlabel("The number of qubits")
+    plt.ylabel("The number of sequences")
+    plt.title("The number of sequences for each fragment length of 8")
     plt.legend()
     plt.savefig(output_file)
 

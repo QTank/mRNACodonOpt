@@ -41,22 +41,6 @@ def optimization(protein_sequence):
     return results
 
 
-def count_gates(protein_sequence_list):
-    results = []
-    index = 1
-    count = len(protein_sequence_list)
-    results.append(["amino_sequence", "qubit_len", "Gate_counts"])
-    for sequence in protein_sequence_list:
-        tune_parameters = TunableParameters(0.3, 0.15 * 6, 1, 130000)
-        codonOpt = CodonOptimization(sequence, tune_parameters)
-        print(f"{index}/{count} Start to execute VQE on {sequence} ... , requiring {codonOpt.qubit_len} qubits")
-        qubit_op = codonOpt.create_qubit_op()
-        count_pauli_z = util.count_pauli_z(qubit_op)
-        index += 1
-        results.append([sequence, codonOpt.qubit_len, count_pauli_z])
-    return results
-
-
 def spilt_sequence(protein_sequence, split_len):
     sequence_list = []
 
@@ -66,18 +50,6 @@ def spilt_sequence(protein_sequence, split_len):
         index += split_len
 
     return sequence_list
-
-
-def statistic_gates(protein_sequence, split_range):
-    # statistic the number of gates with dense encoding for fragments with a length from 3 to 19
-    for split_len in split_range:
-        sequence_list = spilt_sequence(protein_sequence, split_len)
-        output_data = count_gates(sequence_list)
-        name = time.strftime("%m-%d_%H-%M-%S")
-        path = f"../output/{split_len}/Gate"
-        if not os.path.exists(path):
-            os.makedirs(path)
-        write_data(f"{path}/dense_P0DTC2_{name}_Gate.csv", output_data)
 
 
 def execute_optimization(protein_sequence, split_range):
@@ -127,7 +99,6 @@ if __name__ == '__main__':
     # This is to statistic gates and qubits for the paper A resource-efficient variational quantum algorithm for mRNA
     # codon optimization
     split_range = range(6, 20)
-    statistic_gates(protein_sequence, split_range)
     statistic_qubits(protein_sequence, split_range)
 
     # This is to execute optimization for the protein sequence with short fragments from 3 to 9

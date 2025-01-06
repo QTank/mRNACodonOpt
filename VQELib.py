@@ -1,17 +1,16 @@
-from qiskit.circuit.library import RealAmplitudes, EfficientSU2
+from qiskit.circuit.library import RealAmplitudes
 from qiskit.algorithms.optimizers import COBYLA
 from qiskit.algorithms.minimum_eigensolvers import SamplingVQE
 from qiskit.primitives import Sampler
 from qiskit.opflow import PauliSumOp
-
-def get_ansatz(qubit_op):
-    return EfficientSU2(qubit_op.num_qubits, entanglement="linear", reps=1)
+from qiskit.circuit.library import EfficientSU2
 
 
 def get_min(qubit_op):
     optimizer = COBYLA(maxiter=50)
 
-    ansatz = EfficientSU2(qubit_op.num_qubits, entanglement="linear", reps=1)
+    ansatz = EfficientSU2(su2_gates=['rx', 'ry'], entanglement='full', reps=3)
+    ansatz = EfficientSU2(su2_gates=['rx'], entanglement='circular', reps=1)
 
     counts = []
     values = []
