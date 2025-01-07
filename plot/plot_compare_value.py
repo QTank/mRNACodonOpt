@@ -43,7 +43,7 @@ def plot_dense(opt_data_name, exact_data_name, n, output_file):
 	plt.plot(range(max_value), range(max_value), color='r', label="exact value")
 	plt.xlabel("Exact minimal value")
 	plt.ylabel("Optimal minimal value")
-	plt.title("Each amino acid sequence with length of %i" % n)
+	# plt.title("Each amino acid sequence with length of %i" % n)
 	plt.legend()
 	# plt.show()
 	plt.savefig(output_file)

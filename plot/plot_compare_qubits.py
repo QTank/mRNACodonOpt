@@ -8,9 +8,9 @@ def plot_qubits(dense_qubits, one_hot_qubits, output_file):
     plt.plot(x, dense_qubits[0], marker='*', label='maximum on dense')
     plt.plot(x, one_hot_qubits[1], marker='h', label='mean on one-hot')
     plt.plot(x, dense_qubits[1], marker="v", label="mean on dense")
-    plt.xlabel("the length of each fragment of protein")
-    plt.ylabel("the number of qubits")
-    plt.title("the required number of gates with one-hot and dense encoding")
+    plt.xlabel("Length of each fragment")
+    plt.ylabel("Number of qubits")
+    # plt.title("the required number of gates with one-hot and dense encoding")
     plt.legend()
     plt.savefig(output_file)
 
